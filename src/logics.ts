@@ -1,0 +1,1 @@
+//Arquivo que vai conter todas as callbacks utilizadas nos métodos HTTP do Express, essas callbacks terão toda a lógica da aplicação
