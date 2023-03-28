@@ -1,11 +1,13 @@
-import express, { Application, json } from "express"
+import express, { Application, json } from "express";
 
-const app : Application = express()
+const app: Application = express();
 
-app.use(json())
+app.use(json());
 
-const PORT : number = 3000;
-const runningMsg = `Server is running on http://localhost:${PORT}`
+//Aqui vão as requisições
+
+const PORT: number = 3000;
+const runningMsg = `Server is running on http://localhost:${PORT}`;
 app.listen(PORT, () => {
-    console.log(runningMsg)
-})
+  console.log(runningMsg);
+});
