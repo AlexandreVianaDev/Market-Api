@@ -4,8 +4,10 @@ export interface IProduct {
   price: number;
   weight: number;
   section: "food" | "cleaning";
-  expirationDate: Date;
+  expirationDate: Date | string;
 }
+
+export type IProductRequest = Omit<IProduct, "id" | "expirationDate">;
 
 export interface ICleaningProduct extends IProduct {}
 
