@@ -7,7 +7,7 @@ export interface IProduct {
   expirationDate: Date | string;
 }
 
-export type IProductRequest = Omit<IProduct, "id" | "expirationDate">;
+export type TProductRequest = Omit<IProduct, "id" | "expirationDate">;
 
 export interface ICleaningProduct extends IProduct {}
 

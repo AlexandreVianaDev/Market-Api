@@ -6,19 +6,20 @@ import {
   getProductById,
   getProducts,
   updateProduct,
-} from "./logics";
+} from "./logic";
+import { verifyIfNameExistsPost, verifyIfNameExistsPatch } from "./middlewares";
 
 const app: Application = express();
 
 app.use(json());
 
-app.post("/products", createProducts);
+app.post("/products", verifyIfNameExistsPost, createProducts);
 
 app.get("/products", getProducts);
 
 app.get("/products/:id", getProductById);
 
-app.patch("/products/:id", updateProduct);
+app.patch("/products/:id", verifyIfNameExistsPatch, updateProduct);
 
 app.delete("/products/:id", deleteProduct);
 

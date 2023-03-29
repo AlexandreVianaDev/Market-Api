@@ -1,10 +1,10 @@
 //Arquivo que vai conter todas as callbacks utilizadas nos métodos HTTP do Express, essas callbacks terão toda a lógica da aplicação
 import express, { Application, json, Request, Response } from "express";
 import { market } from "./database";
-import { IProduct, IProductRequest } from "./interfaces";
+import { IProduct, TProductRequest } from "./interfaces";
 
 export const createProducts = (req: Request, res: Response): Response => {
-  const products: IProductRequest[] = req.body;
+  const products: TProductRequest[] = req.body;
 
   const date = new Date();
   date.setFullYear(date.getFullYear() + 1);
@@ -60,9 +60,7 @@ export const getProductById = (req: Request, res: Response): Response => {
 export const updateProduct = (req: Request, res: Response): Response => {
   const { name, price, weight } = req.body;
   const id = parseInt(req.params.id);
-  const product = market.find(
-    (product) => product.id === id
-  );
+  const product = market.find((product) => product.id === id);
   if (product) {
     product.name = name;
     product.price = price;
@@ -77,5 +75,5 @@ export const deleteProduct = (req: Request, res: Response): Response => {
   const findIndex = market.findIndex((product) => product.id === id);
   market.splice(findIndex, 1);
   console.log(market);
-  return res.status(204);
+  return res.status(204).json();
 };
