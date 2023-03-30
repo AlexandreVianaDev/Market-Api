@@ -1,3 +1,3 @@
-import { IFoodProduct, IProduct } from "./interfaces";
+import { ICleaningProduct, IFoodProduct, IProduct } from "./interfaces";
 
-export const market: IProduct[] = [];
+export const market: (IProduct | ICleaningProduct | IFoodProduct)[] = [];

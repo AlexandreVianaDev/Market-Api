@@ -1,5 +1,4 @@
-import express, { Application, json, Request, Response } from "express";
-import { market } from "./database";
+import express, { Application, json } from "express";
 import {
   createProducts,
   deleteProduct,
