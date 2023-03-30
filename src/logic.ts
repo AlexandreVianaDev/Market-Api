@@ -1,7 +1,7 @@
 //Arquivo que vai conter todas as callbacks utilizadas nos métodos HTTP do Express, essas callbacks terão toda a lógica da aplicação
 import express, { Application, json, Request, Response } from "express";
 import { market } from "./database";
-import { IProduct, TProductRequest } from "./interfaces";
+import { IFoodProduct, IProduct, TProductRequest } from "./interfaces";
 
 export const createProducts = (req: Request, res: Response): Response => {
   const products: TProductRequest[] = req.body;
@@ -58,22 +58,34 @@ export const getProductById = (req: Request, res: Response): Response => {
 };
 
 export const updateProduct = (req: Request, res: Response): Response => {
-  const { name, price, weight } = req.body;
-  const id = parseInt(req.params.id);
-  const product = market.find((product) => product.id === id);
-  if (product) {
-    product.name = name;
-    product.price = price;
-    product.weight = weight;
-  }
+  const newInfos = req.body;
+  const findIndex = res.locals.findIndex;
+
+  const product = market[findIndex];
+  product.name = newInfos.name;
+  product.price = newInfos.price;
+  product.weight = newInfos.weight;
+  // product.calories = newInfos.calories;
 
   return res.json(product);
 };
 
+// export const updateProduct = (req: Request, res: Response): Response => {
+//   const newInfos = req.body;
+//   const id = parseInt(req.params.id);
+
+//   const product = market.find((product) => product.id === id);
+//   if (product) {
+//     product.name = newInfos?.name;
+//     product.price = newInfos?.price;
+//     product.weight = newInfos?.weight;
+//   }
+
+//   return res.json(product);
+// };
+
 export const deleteProduct = (req: Request, res: Response): Response => {
-  const id = parseInt(req.params.id);
-  const findIndex = market.findIndex((product) => product.id === id);
+  const findIndex = res.locals.findIndex;
   market.splice(findIndex, 1);
-  console.log(market);
-  return res.status(204).json();
+  return res.status(204).send();
 };
