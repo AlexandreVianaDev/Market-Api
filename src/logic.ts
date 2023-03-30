@@ -1,10 +1,14 @@
-//Arquivo que vai conter todas as callbacks utilizadas nos métodos HTTP do Express, essas callbacks terão toda a lógica da aplicação
-import express, { Application, json, Request, Response } from "express";
+import { Request, Response } from "express";
 import { market } from "./database";
-import { IFoodProduct, IProduct, TProductRequest } from "./interfaces";
+import {
+  ICleaningProduct,
+  IFoodProduct,
+  IProduct,
+  TProductRequest,
+} from "./interfaces";
 
 export const createProducts = (req: Request, res: Response): Response => {
-  const products: TProductRequest[] = req.body;
+  const newProductsWithoutId: TProductRequest[] = req.body;
 
   const date = new Date();
   date.setFullYear(date.getFullYear() + 1);
@@ -17,8 +21,8 @@ export const createProducts = (req: Request, res: Response): Response => {
     }
   };
 
-  const newProducts = products.map((product) => {
-    const newProduct: IProduct = {
+  const newProducts = newProductsWithoutId.map((product) => {
+    const newProduct: IProduct | ICleaningProduct | IFoodProduct = {
       id: generateID(),
       ...product,
       expirationDate: date.toLocaleString("pt-BR"),
@@ -45,8 +49,7 @@ export const getProducts = (req: Request, res: Response): Response => {
 };
 
 export const getProductById = (req: Request, res: Response): Response => {
-  const id = parseInt(req.params.id);
-  const findIndex = market.findIndex((product) => product.id === id);
+  const findIndex: number = res.locals.findIndex;
 
   if (findIndex === -1) {
     return res.status(404).json({
@@ -58,34 +61,19 @@ export const getProductById = (req: Request, res: Response): Response => {
 };
 
 export const updateProduct = (req: Request, res: Response): Response => {
-  const newInfos = req.body;
-  const findIndex = res.locals.findIndex;
+  const newInfos: TProductRequest = req.body;
+  const findIndex: number = res.locals.findIndex;
 
-  const product = market[findIndex];
-  product.name = newInfos.name;
-  product.price = newInfos.price;
-  product.weight = newInfos.weight;
-  // product.calories = newInfos.calories;
+  market[findIndex] = {
+    ...market[findIndex],
+    ...newInfos,
+  };
 
-  return res.json(product);
+  return res.json(market[findIndex]);
 };
 
-// export const updateProduct = (req: Request, res: Response): Response => {
-//   const newInfos = req.body;
-//   const id = parseInt(req.params.id);
-
-//   const product = market.find((product) => product.id === id);
-//   if (product) {
-//     product.name = newInfos?.name;
-//     product.price = newInfos?.price;
-//     product.weight = newInfos?.weight;
-//   }
-
-//   return res.json(product);
-// };
-
 export const deleteProduct = (req: Request, res: Response): Response => {
-  const findIndex = res.locals.findIndex;
+  const findIndex: number = res.locals.findIndex;
   market.splice(findIndex, 1);
   return res.status(204).send();
 };

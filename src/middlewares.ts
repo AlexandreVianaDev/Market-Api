@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { market } from "./database";
-import { IProduct } from "./interfaces";
+import { TProductRequest } from "./interfaces";
 
 export const verifyIfNameExistsPost = (
   req: Request,
   res: Response,
   next: NextFunction
 ): Response | void => {
-  const newProducts = req.body;
+  const newProductsWithoutId: TProductRequest[] = req.body;
 
-  const productFind: IProduct[] = newProducts.filter((product: IProduct) =>
-    market.some((prod) => prod.name == product.name)
+  const productFind: TProductRequest[] = newProductsWithoutId.filter(
+    (product) => market.some((prod) => prod.name == product.name)
   );
 
   if (productFind.length > 0) {
@@ -20,8 +20,6 @@ export const verifyIfNameExistsPost = (
   }
 
   return next();
-
-  //   res.locals.product = productFind
 };
 
 export const verifyIfNameExistsPatch = (
@@ -29,64 +27,22 @@ export const verifyIfNameExistsPatch = (
   res: Response,
   next: NextFunction
 ): Response | void => {
-  const newInfos = req.body;
-  // const id = parseInt(req.params.id);
-  const findIndex = res.locals.findIndex;
+  const newInfos: TProductRequest = req.body;
 
-  //  || !newInfos
   if (newInfos.name) {
-    if (newInfos.name === market[findIndex].name) {
-      return next();
-    }
-
-    // const productOnMarket: IProduct | undefined = market.find(
-    //   (prod) => prod.id === id
-    // );
-
-    // if (productOnMarket) {
-    //   if (productOnMarket.name === req.body.name) {
-    //     return next();
-    //   }
-
     const productFilter = market.filter((prod) => {
-      console.log(prod.name, newInfos.name);
       return prod.name === newInfos.name;
     });
+
     if (productFilter.length > 0) {
-      console.log(req.method, req.body);
       return res.status(409).json({
         error: "Product already registered",
       });
     }
   }
 
-  // }
-
-  //   res.locals.product = productFind
   return next();
 };
-
-// export const verifyIfNameExistsPatch = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Response | void => {
-//   const newProducts = req.body;
-
-//   if (newProducts.name) {
-//     const productFind = market.some((prod) => prod.name == newProducts.name);
-
-//     if (!productFind) {
-//       console.log(req.method, req.body);
-//       return res.status(409).json({
-//         error: "Product already registered",
-//       });
-//     }
-//   }
-
-//   //   res.locals.product = productFind
-//   return next();
-// };
 
 export const verifyIfIdExists = (
   req: Request,
